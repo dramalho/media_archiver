@@ -21,7 +21,7 @@ module MediaArchiver
     end
 
     desc 'copy [DIR] [OUTPUT_DIR]', 'Scans a folder and archives media files'
-    option :output_dir, aliases: :o, default: Dir.pwd
+    option :output_dir, aliases: :o
     option :recursive, aliases: :r, type: :boolean, default: true
     option :output_template, default: ':date_created/:camera_maker/:camera_model'
     option :configuration_file, aliases: :c
@@ -49,7 +49,7 @@ module MediaArchiver
     private
 
     def configurations(options)
-      options = options.each_with_object({}) { |(k,v),acc| acc[k.to_sym] = v }
+      options = symbolize_keys!(options)
       system_configurations.merge(options)
     end
 
@@ -67,7 +67,7 @@ module MediaArchiver
     end
 
     def load_config_file(path)
-      YAML.load_file(path)
+      symbolize_keys! YAML.load_file(path)
     end
 
     def output_path(file, output_path, template)
@@ -89,6 +89,10 @@ module MediaArchiver
           part
         end
       end
+    end
+
+    def symbolize_keys!(hash)
+      hash.each_with_object({}) { |(k,v),acc| acc[k.to_sym] = v }
     end
   end
 end
