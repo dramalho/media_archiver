@@ -5,7 +5,6 @@ require 'yaml'
 
 module MediaArchiver
   class CLI < Thor
-
     option :output_dir, aliases: :o, default: Dir.pwd
     option :recursive, aliases: :r, type: :boolean, default: true
     option :output_template, default: ':date_created/:camera_maker/:camera_model'
@@ -33,9 +32,9 @@ module MediaArchiver
 
     def system_configurations
       path = [
-               File.expand_path(Dir.pwd),
-               Dir.home
-              ].map { |path| File.join(path, '.media_archiver_conf.yml' ) }
+        File.expand_path(Dir.pwd),
+        Dir.home
+      ].map { |path| File.join(path, '.media_archiver_conf.yml') }
               .keep_if { |f| File.file? f }
               .first
 
