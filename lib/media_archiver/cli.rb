@@ -5,21 +5,6 @@ require 'yaml'
 
 module MediaArchiver
   class CLI < Thor
-    option :output_dir, aliases: :o, default: Dir.pwd
-    option :recursive, aliases: :r, type: :boolean, default: true
-    option :output_template, default: ':date_created/:camera_maker/:camera_model'
-    option :configuration_file, aliases: :c
-    desc 'scan [PATH]', 'Scans a folder for media files and returns info'
-    def scan(path = Dir.pwd)
-      config = configurations(options)
-
-      path = File.expand_path(path)
-
-      MediaFileUtils.new(path).each(config[:recursive]) do |file|
-        puts output_path(file, config[:output_dir], config[:output_template])
-      end
-    end
-
     desc 'copy [DIR] [OUTPUT_DIR]', 'Scans a folder and archives media files'
     option :output_dir, aliases: :o
     option :recursive, aliases: :r, type: :boolean, default: true
