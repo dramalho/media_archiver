@@ -34,6 +34,24 @@ media_archiver help [COMMAND]           # Describe available commands or one spe
 media_archiver scan [PATH]              # Scans a folder for media files and returns info
 ```
 
+## Configuration
+
+Apart from the options you can set when running individual commands, the script will look for a `.media_archiver_conf.yml` file both in the current folder and on you home folder.
+
+Configurations are prioritized like:
+
+1. CLI options
+1. Current folder configuration file
+1. Home folder configuration file
+
+
+```
+---
+output_dir: ~/photos
+recursive: true
+output_template: :date_created/:make/:model
+```
+
 ## Contributing
 
 1. Fork it ( https://github.com/[my-github-username]/media_archiver/fork )
