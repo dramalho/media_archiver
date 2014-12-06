@@ -9,29 +9,30 @@ another location.
 
 ## Installation
 
-Add this line to your application's Gemfile:
+### MAC OS X
 
-```ruby
-gem 'media_archiver'
+You need `exiftool` to use this command. Simply do:
+
+```bash
+brew install exiftool
 ```
 
-And then execute:
+Then install the gem
 
-    $ bundle
+```bash
+gem install media_archiver
+```
 
-Or install it yourself as:
-
-    $ gem install media_archiver
+and you're done
 
 ## Usage
 
 run `media_archiver` from the command line
 
-```
+```bash
 Commands:
 media_archiver copy [DIR] [OUTPUT_DIR]  # Scans a folder and archives media files
 media_archiver help [COMMAND]           # Describe available commands or one specific command
-media_archiver scan [PATH]              # Scans a folder for media files and returns info
 ```
 
 ## Configuration
@@ -45,7 +46,7 @@ Configurations are prioritized like:
 1. Home folder configuration file
 
 
-```
+```yaml
 ---
 output_dir: ~/photos
 recursive: true
