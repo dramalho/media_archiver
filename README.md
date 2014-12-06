@@ -1,6 +1,11 @@
+[![Gem Version](https://badge.fury.io/rb/media_archiver.svg)](http://badge.fury.io/rb/media_archiver)
+
 # MediaArchiver
 
-TODO: Write a gem description
+Utility that scans a given location for media files and,
+based on Exif information and a set of rules copies the files over to
+another location.
+
 
 ## Installation
 
@@ -20,7 +25,14 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+run `media_archiver` from the command line
+
+```
+Commands:
+media_archiver copy [DIR] [OUTPUT_DIR]  # Scans a folder and archives media files
+media_archiver help [COMMAND]           # Describe available commands or one specific command
+media_archiver scan [PATH]              # Scans a folder for media files and returns info
+```
 
 ## Contributing
 
