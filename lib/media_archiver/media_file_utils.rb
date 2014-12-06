@@ -5,13 +5,7 @@ module MediaArchiver
     end
 
     def each(recursive)
-      files = if recursive
-                Dir.glob(File.join(@path, '**', '*'))
-              else
-                Dir.glob(File.join(@path, '*'))
-              end
-
-      files
+      scan_path(recursive)
         .reject { |path| File.directory? path }
         .each_with_object([]) do |file_path, acc|
           file = MediaFile.new(file_path)
@@ -21,6 +15,16 @@ module MediaArchiver
             acc << file
           end
         end
+    end
+
+    protected
+
+    def scan_path(recursive)
+      if recursive
+        Dir.glob(File.join(@path, '**', '*'))
+      else
+        Dir.glob(File.join(@path, '*'))
+      end
     end
   end
 end

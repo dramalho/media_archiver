@@ -1,6 +1,5 @@
 require 'thor'
 require 'mini_exiftool'
-require 'byebug'
 require 'yaml'
 
 module MediaArchiver
