@@ -40,6 +40,9 @@ module MediaArchiver
       # Defaults that we don't want to set via Thor
       conf[:output_template] = DEFAULT_OUTPUT_TEMPLATE unless conf[:output_template]
 
+      # Sanity checks
+      conf[:output_dir] = File.expand_path(conf[:output_dir]) if conf[:output_dir]
+
       conf
     end
 
