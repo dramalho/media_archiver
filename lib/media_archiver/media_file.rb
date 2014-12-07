@@ -1,6 +1,6 @@
 module MediaArchiver
   class MediaFile
-    attr_reader :path, :file_name
+    attr_reader :path, :file_name, :exif_tags
 
     def initialize(file_path)
       @path = file_path
@@ -8,30 +8,16 @@ module MediaArchiver
 
       begin
         @file = MiniExiftool.new(file_path)
-        @info = @file.to_hash
+        @exif_tags = @file.to_hash.each_with_object({}) do |(k, v), acc|
+          acc[k.downcase] = v if k
+        end
       rescue MiniExiftool::Error
         nil
       end
     end
 
     def valid?
-      @file
-    end
-
-    def exif_tags
-      @info
-    end
-
-    def date_created
-      exif_tags['DateTimeOriginal'].to_date.to_s if exif_tags['DateTimeOriginal']
-    end
-
-    def camera_maker
-      exif_tags['Make']
-    end
-
-    def camera_model
-      exif_tags['Model']
+      @file && @exif_tags
     end
   end
 end

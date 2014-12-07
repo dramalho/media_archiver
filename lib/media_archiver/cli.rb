@@ -4,10 +4,12 @@ require 'yaml'
 
 module MediaArchiver
   class CLI < Thor
+    DEFAULT_OUTPUT_TEMPLATE = ':DateTimeOriginal/:Make/:Model'
+
     desc 'copy [DIR] [OUTPUT_DIR]', 'Scans a folder and archives media files'
     option :output_dir, aliases: :o
     option :recursive, aliases: :r, type: :boolean, default: true
-    option :output_template, default: ':date_created/:camera_maker/:camera_model'
+    option :output_template
     option :configuration_file, aliases: :c
     def copy(path = Dir.pwd)
       config = configurations(options)
@@ -33,21 +35,25 @@ module MediaArchiver
     private
 
     def configurations(options)
-      options = symbolize_keys!(options)
-      system_configurations.merge(options)
+      conf = system_configurations.merge symbolize_keys!(options)
+
+      # Defaults that we don't want to set via Thor
+      conf[:output_template] = DEFAULT_OUTPUT_TEMPLATE unless conf[:output_template]
+
+      conf
     end
 
     def system_configurations
-      path = [
+      config_file = [
         File.expand_path(Dir.pwd),
         Dir.home
       ].map { |path| File.join(path, '.media_archiver_conf.yml') }
               .keep_if { |f| File.file? f }
               .first
 
-      return {} unless path
+      return {} unless config_file
 
-      load_config_file path
+      load_config_file config_file
     end
 
     def load_config_file(path)
@@ -58,7 +64,10 @@ module MediaArchiver
       output = [output_path]
 
       output += output_template_parts(template).map do |key|
-        file.respond_to?(key) ? file.send(key) : file.exif_tags[key.to_s]
+        value = file.exif_tags[key.to_s.downcase]
+        value = value.to_date.to_s if value.is_a?(Time)
+
+        value
       end
       output << file.file_name
 
@@ -76,7 +85,7 @@ module MediaArchiver
     end
 
     def symbolize_keys!(hash)
-      hash.each_with_object({}) { |(k,v),acc| acc[k.to_sym] = v }
+      hash.each_with_object({}) { |(k, v), acc| acc[k.to_sym] = v }
     end
   end
 end
