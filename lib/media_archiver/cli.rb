@@ -64,10 +64,14 @@ module MediaArchiver
       output = [output_path]
 
       output += output_template_parts(template).map do |key|
-        value = file.exif_tags[key.to_s.downcase]
-        value = value.to_date.to_s if value.is_a?(Time)
+        if key.is_a? Symbol
+          value = file.exif_tags[key.to_s.downcase]
+          value = value.to_date.to_s if value.is_a?(Time)
 
-        value
+          value
+        else
+          key
+        end
       end
       output << file.file_name
 

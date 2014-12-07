@@ -50,8 +50,20 @@ Configurations are prioritized like:
 ---
 output_dir: ~/photos
 recursive: true
-output_template: :date_created/:make/:model
+output_template: :DateTimeOriginal/:Make/:Model
 ```
+
+### `output_template`
+
+Anything that starts with a colon the script will replace with the corresponding
+EXIF tag (if set on the individual file), while anything thing else is taken
+as-is and is placed directly on the output path.
+
+Not all media files have the same EXIF tags and not all are commonly used. You
+can check the [list of possible tags](http://owl.phy.queensu.ca/~phil/exiftool/TagNames/index.html)
+and test around with your own files.
+
+Also, any date/time values are currently transformed to a fixed date string.
 
 ## Contributing
 
