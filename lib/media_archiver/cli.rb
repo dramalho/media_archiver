@@ -71,7 +71,7 @@ module MediaArchiver
           value = file.exif_tags[key.to_s.downcase]
           value = value.to_date.to_s if value.is_a?(Time)
 
-          value
+          value || "Unknown"
         else
           key
         end
