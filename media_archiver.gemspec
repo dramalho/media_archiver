@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description   = 'Utility that scans a given location for media files and,
   based on Exif information and a set of rules copies the files over to
   another location.'
-  spec.homepage      = ''
+  spec.homepage      = 'https://github.com/dramalho/media_archiver'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0")
