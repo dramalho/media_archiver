@@ -4,13 +4,19 @@ require 'yaml'
 
 module MediaArchiver
   class CLI < Thor
+    package_name "MediaArchiver"
+    map "-R" => :recursive
+    map "-O" => :output_dir
+    map "-C" => :configuration_file
+
+
     DEFAULT_OUTPUT_TEMPLATE = ':DateTimeOriginal/:Make/:Model'
 
-    desc 'copy [DIR] [OUTPUT_DIR]', 'Scans a folder and archives media files'
-    option :output_dir, aliases: :o
-    option :recursive, aliases: :r, type: :boolean, default: true
-    option :output_template
-    option :configuration_file, aliases: :c
+    desc 'copy [DIR]', 'Scans a folder and archives media files'
+    method_option :output_dir, aliases: :o, desc: 'Output folder where the files should be copied into'
+    method_option :recursive, aliases: :r, type: :boolean, default: true, desc: "Recursivelly scan input folder"
+    method_option :output_template
+    method_option :configuration_file, aliases: :c
     def copy(path = Dir.pwd)
       config = configurations(options)
 
