@@ -9,7 +9,6 @@ module MediaArchiver
     map "-O" => :output_dir
     map "-C" => :configuration_file
 
-
     DEFAULT_OUTPUT_TEMPLATE = ':DateTimeOriginal/:Make/:Model'
 
     desc 'copy [DIR]', 'Scans a folder and archives media files'
@@ -17,8 +16,10 @@ module MediaArchiver
     method_option :recursive, aliases: :r, type: :boolean, default: true, desc: "Recursivelly scan input folder"
     method_option :output_template
     method_option :configuration_file, aliases: :c
+    method_option :overwrite_extensions, type: :array
     def copy(path = Dir.pwd)
       config = configurations(options)
+      puts config
 
       path = File.expand_path(path)
 
@@ -28,7 +29,13 @@ module MediaArchiver
 
         output = ["File: #{dest}"]
         output << if File.exist?(dest)
-                    '[SKIP]'
+          puts dest.split('.').last.downcase
+                    if config[:overwrite_extensions].empty? || !config[:overwrite_extensions].include?(dest.split('.').last.downcase)
+                      '[SKIP]'
+                    else
+                      FileUtils.cp(file.path, dest)
+                      '[OVERWRITE]'
+                    end
                   else
                     FileUtils.cp(file.path, dest)
                     '[OK]'
