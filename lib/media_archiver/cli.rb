@@ -19,7 +19,6 @@ module MediaArchiver
     method_option :overwrite_extensions, type: :array
     def copy(path = Dir.pwd)
       config = configurations(options)
-      puts config
 
       path = File.expand_path(path)
 
@@ -29,7 +28,6 @@ module MediaArchiver
 
         output = ["File: #{dest}"]
         output << if File.exist?(dest)
-          puts dest.split('.').last.downcase
                     if config[:overwrite_extensions].empty? || !config[:overwrite_extensions].include?(dest.split('.').last.downcase)
                       '[SKIP]'
                     else
@@ -40,8 +38,6 @@ module MediaArchiver
                     FileUtils.cp(file.path, dest)
                     '[OK]'
                   end
-
-        puts output.join(' ')
       end
     end
 
