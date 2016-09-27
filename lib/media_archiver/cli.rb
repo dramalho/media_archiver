@@ -38,6 +38,8 @@ module MediaArchiver
                     FileUtils.cp(file.path, dest)
                     '[OK]'
                   end
+
+        puts output.join(' ')
       end
     end
 
