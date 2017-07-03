@@ -16,7 +16,7 @@ module MediaArchiver
     method_option :recursive, aliases: :r, type: :boolean, default: true, desc: "Recursivelly scan input folder"
     method_option :output_template
     method_option :configuration_file, aliases: :c
-    method_option :overwrite_extensions, type: :array
+    method_option :overwrite_extensions, type: :array, default: []
     def copy(path = Dir.pwd)
       config = configurations(options)
 
