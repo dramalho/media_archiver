@@ -16,7 +16,7 @@ module MediaArchiver
     method_option :recursive, aliases: :r, type: :boolean, default: true, desc: "Recursivelly scan input folder"
     method_option :output_template
     method_option :configuration_file, aliases: :c
-    method_option :overwrite_extensions, type: :array, default: []
+    method_option :overwrite_extensions, type: :array
     def copy(path = Dir.pwd)
       config = configurations(options)
 
@@ -49,7 +49,8 @@ module MediaArchiver
       conf = system_configurations.merge symbolize_keys!(options)
 
       # Defaults that we don't want to set via Thor
-      conf[:output_template] = DEFAULT_OUTPUT_TEMPLATE unless conf[:output_template]
+      conf[:output_template]      ||= DEFAULT_OUTPUT_TEMPLATE
+      conf[:overwrite_extensions] ||= []
 
       # Sanity checks
       conf[:output_dir] = File.expand_path(conf[:output_dir]) if conf[:output_dir]
