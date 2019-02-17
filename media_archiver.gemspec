@@ -21,9 +21,9 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_development_dependency 'bundler', '~> 1'
-  spec.add_development_dependency 'rake', '~> 11'
   spec.add_development_dependency 'byebug', '~> 9'
+  spec.add_development_dependency 'rake', '~> 11'
 
-  spec.add_dependency 'mini_exiftool', '~> 2.7'
+  spec.add_dependency 'mini_exiftool', '~> 2.9'
   spec.add_dependency 'thor', '~> 0'
 end
