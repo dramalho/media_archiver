@@ -4,42 +4,45 @@ require 'yaml'
 
 module MediaArchiver
   class CLI < Thor
-    package_name "MediaArchiver"
-    map "-R" => :recursive
-    map "-O" => :output_dir
-    map "-C" => :configuration_file
+    package_name 'MediaArchiver'
+    map '-R' => :recursive
+    map '-O' => :output_dir
+    map '-C' => :configuration_file
 
-    DEFAULT_OUTPUT_TEMPLATE = ':DateTimeOriginal/:Make/:Model'
+    DEFAULT_OUTPUT_TEMPLATE = ':DateTimeOriginal/:Make/:Model'.freeze
 
-    desc 'copy [DIR]', 'Scans a folder and archives media files'
+    desc 'copy [PATH]', 'Scans a folder and archives media files'
     method_option :output_dir, aliases: :o, desc: 'Output folder where the files should be copied into'
-    method_option :recursive, aliases: :r, type: :boolean, default: true, desc: "Recursivelly scan input folder"
+    method_option :recursive, aliases: :r, type: :boolean, default: true, desc: 'Recursivelly scan input folder'
     method_option :output_template
     method_option :configuration_file, aliases: :c
     method_option :overwrite_extensions, type: :array
-    def copy(path = Dir.pwd)
+    def copy(*paths)
       config = configurations(options)
 
-      path = File.expand_path(path)
+      paths.each do |path|
+        path = File.expand_path(path)
 
-      MediaFileUtils.new(path).each(config[:recursive]) do |file|
-        dest = output_path(file, config[:output_dir], config[:output_template])
-        FileUtils.mkdir_p(File.dirname(dest))
+        MediaFileUtils.new(path).each(config[:recursive]) do |file|
+          dest = output_path(file, config[:output_dir], config[:output_template])
 
-        output = ["File: #{dest}"]
-        output << if File.exist?(dest)
-                    if config[:overwrite_extensions].empty? || !config[:overwrite_extensions].include?(dest.split('.').last.downcase)
-                      '[SKIP]'
+          FileUtils.mkdir_p(File.dirname(dest))
+
+          output = ["File: #{dest}"]
+          output << if File.exist?(dest)
+                      if config[:overwrite_extensions].empty? || !config[:overwrite_extensions].include?(dest.split('.').last.downcase)
+                        '[SKIP]'
+                      else
+                        FileUtils.cp(file.path, dest)
+                        '[OVERWRITE]'
+                      end
                     else
                       FileUtils.cp(file.path, dest)
-                      '[OVERWRITE]'
+                      '[OK]'
                     end
-                  else
-                    FileUtils.cp(file.path, dest)
-                    '[OK]'
-                  end
 
-        puts output.join(' ')
+          puts output.join(' ')
+        end
       end
     end
 
@@ -59,12 +62,10 @@ module MediaArchiver
     end
 
     def system_configurations
-      config_file = [
-        File.expand_path(Dir.pwd),
-        Dir.home
-      ].map { |path| File.join(path, '.media_archiver_conf.yml') }
-              .keep_if { |f| File.file? f }
-              .first
+      config_file = system_configuration_file_paths
+                    .map { |path| File.join(path, '.media_archiver_conf.yml') }
+                    .keep_if { |f| File.file? f }
+                    .first
 
       return {} unless config_file
 
@@ -83,7 +84,7 @@ module MediaArchiver
           value = file.exif_tags[key.to_s.downcase]
           value = value.to_date.to_s if value.is_a?(Time)
 
-          value || "Unknown"
+          value || 'Unknown'
         else
           key
         end
@@ -105,6 +106,13 @@ module MediaArchiver
 
     def symbolize_keys!(hash)
       hash.each_with_object({}) { |(k, v), acc| acc[k.to_sym] = v }
+    end
+
+    def system_configuration_file_paths
+      [
+        File.expand_path(Dir.pwd),
+        Dir.home
+      ]
     end
   end
 end
