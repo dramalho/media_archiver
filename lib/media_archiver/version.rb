@@ -1,3 +1,3 @@
 module MediaArchiver
-  VERSION = '0.0.8.0'.freeze
+  VERSION = '0.1.0.0'.freeze
 end
